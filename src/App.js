@@ -1,23 +1,43 @@
 import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+import { ReactVideoPlayer } from 'video-player-for-react'
+import 'video-player-for-react/dist/index.css'
 
 function App() {
+  const [video,setVidedo]=useState([])
+  const [singleVideo,setSingleVideo]=useState('')
+
+  useEffect(()=>{
+    fetch(`https://care-box-backend.herokuapp.com/api/v1/applicant_test/get_video_link/`)
+    .then(res=>res.json()).then(data=>{
+      setVidedo(data)
+    })
+  },[])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      
+<div>
+<ReactVideoPlayer
+      width='928px'
+      url={singleVideo}
+      type='video/mp4'
+      poster='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg'
+      
+    />
+</div>
+<div>
+ {video.map(v=>{
+  console.log(v)
+  return <div key={v.id}>
+    <ul>
+      <li onClick={()=>setSingleVideo(v.link)} style={{ cursor:'pointer'}}>{v.link}</li>
+    </ul>
+  </div>
+ })} 
+</div>
+
+
     </div>
   );
 }
